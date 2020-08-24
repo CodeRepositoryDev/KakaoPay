@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kakao.pay.sprinkle.mapper.SprinkleMoneyMapper">
+    <insert id="insertSprinkleMoney" parameterType="com.kakao.pay.sprinkle.model.SprinkleMoney">
+        INSERT INTO sprinkle_money
+        (
+            token
+            , room_id
+            , sprinkle_money
+            , receiver_count
+            , sprinkle_user_id
+            , sprinkle_date_time
+        )
+        VALUES
+        (
+            #{token}
+            , #{roomId}
+            , #{sprinkleMoney}
+            , #{receiverCount}
+            , #{sprinkleUserId}
+            , NOW()
+        )
+    </insert>
+
+    <insert id="insertDistributeMoney" parameterType="com.kakao.pay.sprinkle.model.DistributeMoney">
+        INSERT INTO distribute_money
+        (
+            token
+            , seq
+            , distribute_money
+        )
+        VALUES
+        (
+            #{token}
+            , #{seq}
+            , #{distributeMoney}
+        )
+    </insert>
+
+    <select id="selectSprinkleMoney" parameterType="String" resultType="com.kakao.pay.sprinkle.model.SprinkleMoney">
+        SELECT token AS token
+             , room_id AS roomId
+             , sprinkle_money AS sprinkleMoney
+             , receiver_count AS receiverCount
+             , sprinkle_user_id AS sprinkleUserId
+             , sprinkle_date_time AS sprinkleDateTime
+          FROM sprinkle_money
+         WHERE token = #{token}
+    </select>
+
+    <select id="selectAlreadyReceiverId" parameterType="map" resultType="boolean">
+        SELECT COUNT(1)
+          FROM distribute_money
+         WHERE token = #{token}
+           AND receiver_id = #{receiverId}
+    </select>
+
+    <select id="selectReceivedMoneyList" parameterType="String" resultType="com.kakao.pay.sprinkle.model.ReceivedMoney">
+        SELECT distribute_money AS receiveMoney
+             , receiver_id AS receiverId
+          FROM distribute_money
+         WHERE token = #{token}
+           AND receiver_id IS NOT NULL
+    </select>
+
+    <select id="selectDistributeMoney" parameterType="String" resultType="com.kakao.pay.sprinkle.model.DistributeMoney">
+        SELECT dm.token AS token
+             , dm.seq AS seq
+             , dm.distribute_money AS distributeMoney
+          FROM distribute_money dm
+         WHERE dm.token = #{token}
+           AND dm.receiver_id IS NULL
+      ORDER BY dm.seq
+         LIMIT 1
+    </select>
+
+    <update id="updateReceiveDistributeMoney" parameterType="map">
+        UPDATE distribute_money
+           SET receiver_id = #{receiverId}
+             , receive_date_time = NOW()
+         WHERE token = #{distributeMoney.token}
+           AND seq = #{distributeMoney.seq}
+    </update>
+</mapper>

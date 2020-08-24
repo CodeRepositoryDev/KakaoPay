@@ -1,0 +1,7 @@
+PUT http://localhost:8080/receive/money
+Content-Type: application/json
+X-ROOM-ID: room4
+X-USER-ID: 1
+
+{"token": "n6B"}
+###

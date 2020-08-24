@@ -1,0 +1,10 @@
+POST http://localhost:8080/sprinkle/money
+Content-Type: application/json
+X-ROOM-ID: room4
+X-USER-ID: 31337
+
+{
+  "sprinkleMoney": 25000000,
+  "receiverCount": 8
+}
+###

@@ -1,0 +1,5 @@
+GET http://localhost:8080/search/money?token=n6B
+Content-Type: application/json
+X-USER-ID: 31337
+
+###
