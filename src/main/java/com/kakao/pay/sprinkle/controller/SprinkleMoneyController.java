@@ -12,6 +12,7 @@ import com.kakao.pay.sprinkle.type.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -67,6 +68,17 @@ public class SprinkleMoneyController {
                 .success(false)
                 .errorCode(ErrorCode.DIFFERENT_ROOM_ID.getErrorCode())
                 .errorMessage(ErrorCode.DIFFERENT_ROOM_ID.getErrorMessage())
+                .build();
+    }
+
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResponse missingRequestHeaderException(MissingRequestHeaderException exception) {
+        log.error("[API-FAIL]", exception);
+        return ApiResponse.builder()
+                .success(false)
+                .errorCode(ErrorCode.INVALID_PARAMETER.getErrorCode())
+                .errorMessage(ErrorCode.INVALID_PARAMETER.getErrorMessage())
                 .build();
     }
 
